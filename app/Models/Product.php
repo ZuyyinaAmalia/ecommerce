@@ -9,10 +9,8 @@ class Product extends Model
 {
     use HasFactory;
 
-    // Nama tabel (opsional, karena defaultnya plural)
     protected $table = 'products';
 
-    // Kolom yang bisa diisi mass-assignment
     protected $fillable = [
         'name',
         'price',
@@ -68,3 +66,4 @@ class Product extends Model
             : asset('storage/' . $this->image);
     }
 }
+
