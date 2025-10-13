@@ -9,6 +9,7 @@
         @livewireStyles
     </head>
     <body class="bg-slate-200 dark:bg-slate-700">
+        <script src="//unpkg.com/alpinejs" defer></script>
         @livewire('partials.navbar')
         <main>
             {{ $slot }}

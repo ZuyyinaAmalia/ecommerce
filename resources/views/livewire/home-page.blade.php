@@ -6,19 +6,19 @@
                 <!-- Grid -->
                 <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
                     <div class="text-center md:text-left">
-                        <h1 class="block text-4xl font-bold text-gray-800 sm:text-5xl lg:text-7xl lg:leading-tight mb-4">
-                            KERIS
-                        </h1>
-                        <h2 class="block text-2xl font-semibold text-gray-800 sm:text-3xl lg:text-5xl lg:leading-tight mb-6">
-                            KRENGGA WINDA
+                        <!-- <h1 class="block text-4xl font-bold text-gray-800 sm:text-5xl lg:text-7xl lg:leading-tight mb-4">
+                            EXPRESS YOUR STYLE WITH BATIK
+                        </h1> -->
+                        <h2 class="block text-2xl font-bold text-gray-800 sm:text-3xl lg:text-5xl lg:leading-tight mb-6">
+                            EXPRESS YOUR STYLE WITH BATIK
                         </h2>
                         <p class="text-lg text-gray-700 sm:text-xl lg:text-2xl italic mb-8 max-w-2xl">
-                            FREEDOM ISN'T ALWAYS LOUD. SOMETIMES, IT'S JUST KNOWING WHO YOU ARE AND WEARING IT WITH PRIDE.
+                            Tradisi tak pernah ketinggalan zaman. Saatnya tampil modern tanpa meninggalkan akar budaya.
                         </p>
 
                         <!-- Button -->
                         <div class="mt-8">
-                            <a class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-lg border border-transparent bg-amber-600 text-white hover:bg-amber-700 transition duration-300 transform hover:scale-105" href="/shop">
+                            <a class="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 transition duration-300 transform hover:scale-105" href="/shop">
                                 SHOP NOW
                                 <svg class="flex-shrink-0 w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="m9 18 6-6-6-6" />
@@ -66,7 +66,7 @@
                 <div class="p-4 md:p-5">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
-                    <img class="h-[2.375rem] w-[2.375rem] rounded-full" src="https://cdn.bajajelectronics.com/product/b002c02c-c379-49f8-b2a6-bd2e56d0e23a" alt="{{ $category->name }}">
+                    <img class="h-[2.375rem] w-[2.375rem] rounded-full" src="{{ url('storage', $category->image) }}" alt="{{ $category->name }}">
                     <div class="ms-3">
                         <h3 class="group-hover:text-blue-600 font-semibold text-gray-800 dark:group-hover:text-gray-400 dark:text-gray-200">
                         {{ $category->name }}

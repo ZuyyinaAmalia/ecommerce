@@ -20,6 +20,9 @@ class CategoriesTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
+                ImageColumn::make('image')
+                    ->disk('public')
+                    ->circular(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
