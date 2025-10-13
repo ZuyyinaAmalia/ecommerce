@@ -1,57 +1,100 @@
 @extends('layouts.admin')
 
+@section('title', 'Products')
+@section('page-title', 'Products')
+
 @section('content')
-<div class="p-6">
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-semibold">Products</h2>
-        <a href="{{ route('products.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+<div style="
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #fdf4e3;
+    min-height: 100vh;
+    padding: 30px;
+">
+    <!-- Header Section -->
+    <div style="
+        background: linear-gradient(145deg, #c78d4e, #a76b32);
+        color: #fff;
+        font-weight: bold;
+        padding: 12px 16px;
+        border-radius: 10px 10px 0 0;
+        border: 1px solid #8c5a2b;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    ">
+        <span>Products</span>
+        <a href="{{ route('products.create') }}" 
+           style="background-color:#b3733d; color:#fff; text-decoration:none; padding:8px 14px; border-radius:6px; font-weight:bold; border:1px solid #8c5a2b;">
             + Add Product
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('success') }}
-        </div>
-    @endif
+    <!-- Table Container -->
+    <div style="
+        background-color: #fff8ef;
+        border: 1px solid #a9793a;
+        border-top: none;
+        border-radius: 0 0 10px 10px;
+        padding: 25px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        overflow-x: auto;
+    ">
+        @if(session('success'))
+            <div style="background-color:#e6f4ea; border:1px solid #9ccc9c; color:#27632a; padding:10px 14px; border-radius:6px; margin-bottom:15px;">
+                {{ session('success') }}
+            </div>
+        @endif
 
-    <div class="overflow-x-auto bg-white shadow rounded-lg">
-        <table class="w-full text-left border-collapse">
-            <thead class="bg-gray-100 border-b">
+        <table style="
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #c09055;
+            background-color: #fffdf8;
+        ">
+            <thead style="background-color:#f1e0c3;">
                 <tr>
-                    <th class="px-4 py-2">Image</th>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Category</th>
-                    <th class="px-4 py-2">Price</th>
-                    <th class="px-4 py-2">Stock</th>
-                    <th class="px-4 py-2">Active</th>
-                    <th class="px-4 py-2 text-right">Actions</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:left;">Image</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:left;">Name</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:left;">Category</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:left;">Price</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:left;">Stock</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:left;">Active</th>
+                    <th style="padding:10px; border:1px solid #c09055; text-align:center;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($products as $product)
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="px-4 py-2">
+                <tr style="background-color:#fff; border-bottom:1px solid #d8b377; transition:background-color 0.2s;"
+                    onmouseover="this.style.backgroundColor='#fff2df'"
+                    onmouseout="this.style.backgroundColor='#fff'">
+                    <td style="padding:8px; border:1px solid #d8b377;">
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" class="w-14 h-14 object-cover rounded-lg">
+                            <img src="{{ asset('storage/' . $product->image) }}" alt="Image" style="width:60px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #c09055;">
                         @else
-                            <span class="text-gray-400">No Image</span>
+                            <span style="color:#9c8b72;">No Image</span>
                         @endif
                     </td>
-                    <td class="px-4 py-2">{{ $product->name }}</td>
-                    <td class="px-4 py-2">{{ $product->category->name ?? '-' }}</td>
-                    <td class="px-4 py-2">Rp{{ number_format($product->price, 0, ',', '.') }}</td>
-                    <td class="px-4 py-2">{{ $product->stock }}</td>
-                    <td class="px-4 py-2">
-                        <span class="px-2 py-1 text-xs rounded-full {{ $product->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
-                            {{ $product->is_active ? 'Active' : 'Inactive' }}
-                        </span>
+                    <td style="padding:8px; border:1px solid #d8b377;">{{ $product->name }}</td>
+                    <td style="padding:8px; border:1px solid #d8b377;">{{ $product->category->name ?? '-' }}</td>
+                    <td style="padding:8px; border:1px solid #d8b377;">Rp{{ number_format($product->price, 0, ',', '.') }}</td>
+                    <td style="padding:8px; border:1px solid #d8b377;">{{ $product->stock }}</td>
+                    <td style="padding:8px; border:1px solid #d8b377;">
+                        @if($product->is_active)
+                            <span style="color:#2b6b2b; font-weight:bold;">Active</span>
+                        @else
+                            <span style="color:#9b9b9b;">Inactive</span>
+                        @endif
                     </td>
-                    <td class="px-4 py-2 text-right space-x-2">
-                        <a href="{{ route('products.edit', $product) }}" class="text-black hover:underline">Edit</a>
-                        <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline">
+                    <td style="padding:8px; border:1px solid #d8b377; text-align:center;">
+                        <a href="{{ route('products.edit', $product) }}" 
+                           style="color:#4b2e05; text-decoration:none; font-weight:bold; margin-right:10px;">Edit</a>
+
+                        <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
                             @csrf @method('DELETE')
-                            <button type="submit" class="text-black hover:underline" onclick="return confirm('Delete this product?')">
+                            <button type="submit" onclick="return confirm('Delete this product?')"
+                                style="color:#a7342b; background:none; border:none; cursor:pointer; font-weight:bold;">
                                 Delete
                             </button>
                         </form>
@@ -61,10 +104,12 @@
             </tbody>
         </table>
 
-        <div class="p-4">
+        <!-- Pagination -->
+        <div style="padding-top:15px;">
             {{ $products->links() }}
         </div>
     </div>
 </div>
 @endsection
+
 

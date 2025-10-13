@@ -1,6 +1,65 @@
 @extends('layouts.admin')
 
 @section('content')
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #1f2937;
+    }
+
+    /* Card order */
+    .order-card {
+        margin-bottom: 2rem;
+        border-width: 2px; /* lebih tebal */
+        border-radius: 1rem; /* tumpul */
+        padding: 1.5rem; /* beri ruang dalam */
+        background: linear-gradient(to bottom right, #f7e0b2, #e5b982);
+    }
+
+    /* Form Search */
+    .search-form {
+        background-color: white;
+        border: 2px solid #fbbf24;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2.5rem; /* jarak dengan card order */
+        box-shadow: 0 4px 10px rgba(251, 191, 36, 0.2);
+    }
+
+    .search-form input[type="text"] {
+        height: 56px; /* lebih tinggi */
+        font-size: 15px;
+        padding: 0 1.5rem;
+        flex: 1;
+        min-width: 340px;
+    }
+
+    .search-form select {
+        height: 56px;
+        font-size: 15px;
+        padding: 0 1rem;
+    }
+
+    .search-form button {
+        height: 56px;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 0 2rem;
+    }
+
+    /* Ukuran gambar produk diperkecil */
+    .product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 0.75rem;
+    }
+</style>
+
 <div class="space-y-6 p-6">
     {{-- Header --}}
     <div>
@@ -9,26 +68,24 @@
     </div>
 
     {{-- Search & Filter --}}
-    <form method="GET" action="{{ route('orders.index') }}" 
-          class="bg-white rounded-2xl shadow-xl p-8 border border-amber-200">
+    <form method="GET" action="{{ route('details.index') }}" class="search-form">
         <div class="flex flex-wrap items-center gap-4">
             <input type="text" 
                    name="search" 
                    value="{{ request('search') }}" 
                    placeholder="🔍 Search by Order ID or Product..."
-                   class="flex-1 min-w-[300px] border border-gray-300 bg-gray-50 rounded-xl px-6 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:bg-white shadow-sm transition-all">
+                   class="border border-gray-300 bg-gray-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 focus:bg-white shadow-sm transition-all">
 
             <select name="status" 
-                    class="border border-gray-300 bg-gray-50 rounded-xl px-6 py-3 text-base font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-sm min-w-[200px] cursor-pointer transition-all">
+                    class="border border-gray-300 bg-gray-50 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-sm min-w-[200px] cursor-pointer transition-all">
                 <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>📋 All Status</option>
                 <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>⏳ Pending</option>
                 <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>🔄 Processing</option>
                 <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>✅ Completed</option>
-                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>❌ Cancelled</option>
             </select>
 
             <button type="submit" 
-                    class="px-8 py-3 bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-gray-900 rounded-xl hover:from-amber-500 hover:via-amber-600 hover:to-orange-600 transition-all duration-300 font-bold text-base shadow-lg hover:shadow-amber-500/50 hover:scale-105 border border-amber-600">
+                    class="bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-gray-900 rounded-xl hover:from-amber-500 hover:via-amber-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-amber-500/50 hover:scale-105 border border-amber-600">
                 🔍 SEARCH
             </button>
         </div>
@@ -37,9 +94,9 @@
     {{-- Order List --}}
     <div>
         @forelse($orders as $order)
-        <div class="bg-gradient-to-br from-amber-50/80 to-orange-50/60 rounded-2xl shadow-lg border border-amber-200/50 overflow-hidden mb-6">
+        <div class="order-card !bg-gradient-to-br !from-amber-200 !to-orange-100 shadow-lg border border-amber-400 overflow-hidden">
             {{-- Header Info --}}
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 p-6 bg-gradient-to-r from-amber-100 to-orange-100 border-b border-amber-300">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 p-6 bg-gradient-to-r from-amber-200 to-orange-200 border-b border-amber-400 rounded-t-xl">
                 <div>
                     <p class="text-base text-gray-700 mb-1 font-bold">📅 {{ $order->created_at->format('d F Y') }}</p>
                     <p class="text-lg text-gray-900 font-extrabold">Order #{{ $order->id }}</p>
@@ -69,21 +126,26 @@
                 
                 <div class="flex items-start justify-end">
                     <a href="{{ route('details.show', $order->id) }}" 
-                       class="px-6 py-2.5 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 text-gray-900 rounded-xl hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 transition-all duration-300 font-bold text-base shadow-lg hover:shadow-blue-500/50 hover:scale-105 border border-blue-700">
-                        📋 DETAILS
+                        class="px-5 py-2 bg-gradient-to-br from-amber-300 via-amber-400 to-orange-400 
+                                text-amber-950 font-semibold text-sm rounded-lg 
+                                border border-amber-500 shadow-sm 
+                                hover:from-amber-400 hover:via-amber-500 hover:to-orange-500 
+                                hover:shadow-[0_0_10px_rgba(251,191,36,0.5)] 
+                                hover:scale-105 active:scale-95 transition-all duration-300">
+                            📋 DETAILS
                     </a>
                 </div>
             </div>
 
             {{-- Product Items --}}
-            <div class="p-6 space-y-4">
+            <div class="p-8 space-y-4">
                 @foreach($order->items as $item)
                 <div class="flex gap-6 items-start pb-4 {{ !$loop->last ? 'border-b border-amber-200' : '' }}">
-                    <div class="w-28 h-28 bg-white flex items-center justify-center rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-gray-200">
+                    <div class="bg-white flex items-center justify-center rounded-xl overflow-hidden flex-shrink-0 shadow-md border border-gray-200">
                         @if($item->product->image ?? false)
                             <img src="{{ asset('storage/' . $item->product->image) }}" 
                                  alt="{{ $item->product->name }}" 
-                                 class="w-full h-full object-cover">
+                                 class="product-image">
                         @else
                             <span class="text-4xl">📦</span>
                         @endif
@@ -93,7 +155,9 @@
                             {{ $item->product->name ?? 'Produk tidak tersedia' }}
                         </h4>
                         <p class="text-gray-900 font-bold text-base mb-1">IDR {{ number_format($item->price, 0, ',', '.') }}</p>
-                        <p class="text-sm text-gray-800 font-semibold">Quantity: <span class="font-bold text-gray-900">{{ $item->quantity }} Item</span></p>
+                        <p class="text-sm text-gray-800 font-semibold">
+                            Quantity: <span class="font-bold text-gray-900">{{ $item->quantity }} Item</span>
+                        </p>
                     </div>
                 </div>
                 @endforeach
@@ -113,6 +177,11 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
 
 
 

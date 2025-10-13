@@ -1,69 +1,81 @@
 @extends('layouts.admin')
 
+@section('title','Dashboard - E-Commerce')
+@section('page-title','Overview')
+
 @section('content')
-<div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-semibold text-gray-800">📁 Categories</h1>
-        <a href="{{ route('categories.create') }}"
-           class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">
-           + New Category
-        </a>
+<!-- Import Roboto -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<div style="font-family:'Roboto',sans-serif; padding:30px;">
+
+    {{-- CARD: Categories --}}
+    <div class="order-card shadow-lg border overflow-hidden"
+         style="background: linear-gradient(to bottom right, #d3a76b, #ffdeb6ff);
+                border:1px solid #b5783c;
+                border-radius: 16px;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+                padding: 28px 32px;
+                width: 100%;
+                font-family: 'Roboto', sans-serif;
+                line-height: 1.5;
+                margin: 0 auto;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <h2 style="color:#3b240a; font-weight:700; font-size:20px; display:flex; align-items:center;">
+                📂 <span style="margin-left:8px;">Categories</span>
+            </h2>
+            <a href="{{ route('categories.create') }}"
+               style="background-color:#8b5e34;
+                      color:#fff;
+                      padding:10px 20px;
+                      border-radius:8px;
+                      font-weight:500;
+                      text-decoration:none;
+                      transition:0.2s;">
+                + New Category
+            </a>
+        </div>
+
+        <table style="width:100%; border-collapse:collapse; font-size:15px; color:#2e1a05;">
+            <thead style="background-color:rgba(255,255,255,0.2);">
+                <tr>
+                    <th style="padding:12px 10px; text-align:left;">#</th>
+                    <th style="padding:12px 10px; text-align:left;">Name</th>
+                    <th style="padding:12px 10px; text-align:left;">Created At</th>
+                    <th style="padding:12px 10px; text-align:left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($categories as $index => $category)
+                <tr style="border-top:1px solid rgba(255,255,255,0.25);">
+                    <td style="padding:10px 10px;">{{ $index + 1 }}</td>
+                    <td style="padding:10px 10px;">{{ $category->name }}</td>
+                    <td style="padding:10px 10px;">{{ $category->created_at->format('Y-m-d') }}</td>
+                    <td style="padding:10px 10px;">
+                        <a href="{{ route('categories.edit', $category->id) }}"
+                           style="color:#4b2e05; font-weight:500; margin-right:10px; text-decoration:none;">Edit</a>
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    style="color:#7a4a2b; font-weight:500; border:none; background:none; cursor:pointer;">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
     </div>
-
-    @if (session('success'))
-        <div class="mb-4 p-3 rounded-lg bg-green-100 text-green-700 border border-green-300">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if($categories->count())
-        <div class="overflow-x-auto bg-white shadow rounded-lg">
-            <table class="min-w-full border border-gray-200">
-                <thead class="bg-gray-100 border-b">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-gray-600">#</th>
-                        <th class="px-4 py-2 text-left text-gray-600">Name</th>
-                        <th class="px-4 py-2 text-left text-gray-600">Created At</th>
-                        <th class="px-4 py-2 text-center text-gray-600">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($categories as $category)
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-2">{{ $loop->iteration }}</td>
-                        <td class="px-4 py-2 font-medium text-gray-800">{{ $category->name }}</td>
-                        <td class="px-4 py-2 text-gray-600">{{ $category->created_at->format('Y-m-d') }}</td>
-                        <td class="px-4 py-2 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('categories.edit', $category) }}"
-                                   class="px-3 py-1 bg-yellow-400 text-gray-800 rounded-lg hover:bg-yellow-500 transition">
-                                   Edit
-                                </a>
-                                <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Delete this category?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="px-3 py-1 bg-red-500 text-gray-800 rounded-lg hover:bg-red-600 transition">
-                                        Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="mt-6">
-            {{ $categories->links() }}
-        </div>
-    @else
-        <div class="text-center text-gray-500 mt-10">
-            <p>No categories found.</p>
-        </div>
-    @endif
 </div>
 @endsection
+
+
+
+
+
 
 

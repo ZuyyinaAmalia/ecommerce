@@ -1,70 +1,81 @@
 @extends('layouts.admin')
 
+@section('title', 'Create Category')
+@section('page-title', 'Create Category')
+
 @section('content')
-<div class="p-6">
-    {{-- Breadcrumb --}}
-    <div class="text-sm text-gray-500 mb-4">
-        <a href="{{ route('categories.index') }}" class="hover:underline">Categories</a> / 
-        <span class="text-gray-700 font-medium">Create</span>
+<div style="
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #fdf4e3;
+    min-height: 80vh;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+">
+    <div style="
+        width: 90%;
+        max-width: 1000px;
+    ">
+        <div style="
+            background: linear-gradient(145deg, #c78d4e, #a76b32);
+            color: #fff;
+            font-weight: bold;
+            padding: 14px 18px;
+            border-radius: 12px 12px 0 0;
+            border: 1px solid #8c5a2b;
+            font-size: 16px;
+        ">
+            Create Category
+        </div>
+
+        <div style="
+            background-color: #fff8ef;
+            border: 1px solid #a9793a;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 35px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        ">
+            <form action="{{ route('categories.store') }}" method="POST">
+                @csrf
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:8px;">Name <span style="color:red;">*</span></label>
+                    <input type="text" name="name" required
+                        style="width:100%; padding:12px 14px; border:1px solid #b07a3f; border-radius:8px; background-color:#fff; font-size:15px;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:8px;">Slug (Optional)</label>
+                    <input type="text" name="slug"
+                        placeholder="auto-generated if empty"
+                        style="width:100%; padding:12px 14px; border:1px solid #b07a3f; border-radius:8px; background-color:#fff; font-size:15px;">
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block; font-weight:bold; margin-bottom:8px;">Is Active</label>
+                    <input type="checkbox" name="is_active" checked style="accent-color:#a76b32; transform: scale(1.2);">
+                </div>
+
+                <div style="display:flex; gap:12px;">
+                    <button type="submit"
+                        style="background-color:#b3733d; color:#fff; border:none; padding:10px 18px; border-radius:8px; cursor:pointer; font-weight:bold;">
+                        Create
+                    </button>
+
+                    <a href="{{ route('categories.index') }}"
+                        style="background-color:#d2b48c; color:#4b2e05; text-decoration:none; padding:10px 18px; border-radius:8px; border:1px solid #a9793a; font-weight:bold;">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    {{-- Title --}}
-    <h1 class="text-2xl font-semibold text-gray-800 mb-6">Create Category</h1>
-
-    {{-- Form --}}
-    <form action="{{ route('categories.store') }}" method="POST" class="bg-white p-6 rounded-xl shadow-md max-w-3xl">
-        @csrf
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            {{-- Name --}}
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Name <span class="text-red-500">*</span></label>
-                <input type="text" name="name" value="{{ old('name') }}"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none">
-                @error('name')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Slug --}}
-            <div>
-                <label class="block text-gray-700 font-medium mb-1">Slug</label>
-                <input type="text" name="slug" value="{{ old('slug') }}"
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none">
-                @error('slug')
-                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-        </div>
-
-        {{-- Is Active --}}
-        <div class="mb-6 flex items-center gap-2">
-            <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" name="is_active" value="1" class="sr-only peer" checked>
-                <div class="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-orange-500 
-                            after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-                            after:bg-white after:h-5 after:w-5 after:rounded-full after:transition-all
-                            peer-checked:after:translate-x-full"></div>
-            </label>
-            <span class="text-gray-700 font-medium">Is active</span>
-        </div>
-
-        {{-- Buttons --}}
-        <div class="flex gap-3">
-            <button type="submit"
-                    class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg font-medium transition">
-                Create
-            </button>
-            <button type="submit" name="create_another"
-                    class="border border-gray-300 px-5 py-2 rounded-lg hover:bg-gray-100 transition">
-                Create & Create Another
-            </button>
-            <a href="{{ route('categories.index') }}"
-               class="border border-gray-300 px-5 py-2 rounded-lg hover:bg-gray-100 transition">
-                Cancel
-            </a>
-        </div>
-    </form>
 </div>
 @endsection
+
+
+
 
