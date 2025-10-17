@@ -124,4 +124,16 @@ class OrderController extends Controller
         $details = Order::with(['items.product', 'user'])->findOrFail($id);
         return view('admin.details.show', compact('details'));
     }
+
+    public function success(Request $request)
+    {
+        return view('order.success', [
+            'session_id' => $request->get('session_id')
+        ]);
+    }
+
+    public function cancel()
+    {
+        return view('order.cancel');
+    }
 }

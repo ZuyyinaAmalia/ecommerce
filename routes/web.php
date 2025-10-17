@@ -2,14 +2,68 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
+use Illuminate\Http\Request;
+
+
+use App\Livewire\HomePage;
+use App\Livewire\CategoriesPage;
+use App\Livewire\ProductsPage;
+use App\Livewire\CartPage;
+use App\Livewire\ProductDetailPage;
+use App\Livewire\CheckoutPage;
+use App\Livewire\MyOrdersPage;
+use App\Livewire\MyOrdersDetailPage;
+use App\Livewire\auth\LoginPage;
+use App\Livewire\auth\RegisterPage;
+use App\Livewire\auth\ForgotPasswordPage;
+use App\Livewire\auth\ResetPasswordPage;
+use App\Livewire\SuccessPage;
+use App\Livewire\CancelPage;
+
+Route::get('/', HomePage::class);
+Route::get('/categories', CategoriesPage::class);
+Route::get('/products', ProductsPage::class);
+Route::get('/cart', CartPage::class);
+Route::get('/products/{id}', ProductDetailPage::class);
+
+Route::middleware('guest')->group(function(){
+    Route::get('/login', LoginPage::class)->name('login');
+    Route::get('/register', RegisterPage::class);
+    Route::get('/forgot', ForgotPasswordPage::class)->name('password.request');
+    Route::get('/reset/{token}', ResetPasswordPage::class)->name('password.reset');
+});
+
+Route::middleware('auth')->group(function(){
+    Route::post('/logout', function (Request $request){
+        auth()->logout();                           // keluar dari sistem
+        $request->session()->invalidate();           // hapus session lama
+        $request->session()->regenerateToken();      // buat token baru (aman)
+        return redirect('/')->with('success', 'Berhasil logout!'); // redirect ke homepage
+    })->name('logout');
+
+    Route::get('/logout', function () 
+    {
+        if (auth()->check()) {
+            auth()->logout();
+        }
+        return redirect('/')->with('success', 'Berhasil logout!');
+    });
+    // web.php (di dalam group auth)
+    Route::get('/checkout', CheckoutPage::class)->name('checkout');
+    Route::get('/account', App\Livewire\Auth\MyAccountPage::class);
+    Route::get('/my-orders', MyOrdersPage::class);
+    Route::get('/my-orders/{order_id}', MyOrdersDetailPage::class)->name('my-order.show');
+    Route::view('/success', 'success-page')->name('success');
+    Route::get('/cancel', CancelPage::class)->name('cancel');
+
+});
 
 // Default langsung ke dashboard admin
-Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+// Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
 // =========================
 // 🔹 ADMIN ROUTES
@@ -57,10 +111,6 @@ Route::prefix('admin')->group(function () {
 // 🔹 FRONTEND (Landing & Register)
 // =========================
 Route::get('/landing', [LandingController::class, 'index'])->name('landing');
-
-Route::get('/register', [RegisterController::class, 'show'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-
 
 
 

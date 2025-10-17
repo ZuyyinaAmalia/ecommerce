@@ -179,6 +179,16 @@ class ProductController extends Controller
                 ->with('error', 'Gagal mengubah status produk!');
         }
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('q');
+
+        // Ambil produk yang namanya mengandung keyword
+        $products = Product::where('name', 'like', "%{$keyword}%")->get();
+
+        return view('products.index', compact('products'));
+    }
 }
 
 

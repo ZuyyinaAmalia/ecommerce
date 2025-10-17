@@ -339,14 +339,14 @@
             <header class="header">
                 <h1 class="page-title">@yield('page-title','Overview')</h1>
                 <div class="user-info">
-                    <span class="user-greeting">Hi, Guest</span>
-                    {{-- Logout button - akan diaktifkan setelah fitur auth selesai --}}
-                    {{-- 
+                    <span class="user-greeting">
+                        Hi, {{ Auth::user()->name ?? 'Guest' }}
+                    </span>
+
                     <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                         @csrf
                         <button type="submit" class="logout-btn">Logout</button>
                     </form>
-                    --}}
                 </div>
             </header>
 
