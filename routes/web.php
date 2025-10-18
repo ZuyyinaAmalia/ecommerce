@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Http\Request;
 
 
@@ -57,7 +58,7 @@ Route::middleware('auth')->group(function(){
     Route::get('/account', App\Livewire\Auth\MyAccountPage::class);
     Route::get('/my-orders', MyOrdersPage::class);
     Route::get('/my-orders/{order_id}', MyOrdersDetailPage::class)->name('my-order.show');
-    Route::view('/success', 'success-page')->name('success');
+    Route::get('/success', SuccessPage::class)->name('success');
     Route::get('/cancel', CancelPage::class)->name('cancel');
 
 });
@@ -111,6 +112,8 @@ Route::prefix('admin')->group(function () {
 // 🔹 FRONTEND (Landing & Register)
 // =========================
 Route::get('/landing', [LandingController::class, 'index'])->name('landing');
+
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])->name('stripe.webhook');
 
 
 

@@ -140,7 +140,7 @@ class CheckoutPage extends Component
         $order->user_id = Auth::id();
         $order->total = CartManagement::calculateGrandTotal($cart_for_total);
         $order->payment_method = $this->payment_method;
-        $order->status = 'pending';
+        $order->status = 'processing';
         $order->address_text = $this->street_address;
         $order->telp = $this->telp;
 
