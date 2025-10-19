@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
+use App\Helpers\CartManagement;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Dengarkan event login
+        Event::listen(Login::class, function ($event) {
+            $guestCart = CartManagement::getCartItemsFromCookie();
+
+            if (!empty($guestCart)) {
+                // Gabungkan isi cart guest (cookie) ke cart user di database
+                CartManagement::mergeGuestCartToUserCart($event->user, $guestCart);
+
+                // Hapus cookie agar tidak dobel
+                CartManagement::clearCartItems();
+            }
+        });
     }
 }
+
