@@ -1,0 +1,7 @@
+User :
+email : ren123@gmail.com
+password : 123
+
+Admin :
+email : admin@example.com
+password : password
