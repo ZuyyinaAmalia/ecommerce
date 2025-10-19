@@ -22,17 +22,14 @@ class RegisterPage extends Component{
             'password' => 'required|min:6|max:255',
         ]);
 
-        //save to database
         $user = User::create([
             'name' => $this -> name,
             'email' => $this -> email,
             'password' => Hash::make($this->password),
         ]);
         
-        //login user
         auth()->login($user);
 
-        //redirect to home page
         return redirect()->intended();
     }
 

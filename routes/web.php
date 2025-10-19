@@ -113,8 +113,7 @@ Route::prefix('admin')->group(function () {
 // =========================
 Route::get('/landing', [LandingController::class, 'index'])->name('landing');
 
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])->name('stripe.webhook');
-
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
 
 

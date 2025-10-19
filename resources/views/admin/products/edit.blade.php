@@ -14,24 +14,28 @@
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px;">
 
+                <!-- Name -->
                 <div>
                     <label style="display: block; font-weight: 600; margin-bottom: 6px;">Name</label>
                     <input type="text" name="name" value="{{ old('name', $product->name) }}" 
                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                 </div>
 
+                <!-- Price -->
                 <div>
                     <label style="display: block; font-weight: 600; margin-bottom: 6px;">Price</label>
                     <input type="number" name="price" value="{{ old('price', $product->price) }}" 
                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                 </div>
 
+                <!-- Stock -->
                 <div>
                     <label style="display: block; font-weight: 600; margin-bottom: 6px;">Stock</label>
                     <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" 
                            style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                 </div>
 
+                <!-- Category -->
                 <div>
                     <label style="display: block; font-weight: 600; margin-bottom: 6px;">Category</label>
                     <select name="category_id" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
@@ -44,6 +48,14 @@
                     </select>
                 </div>
 
+                <!-- Description -->
+                <div style="grid-column: span 2;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 6px;">Description</label>
+                    <textarea name="description" rows="5" 
+                              style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; resize: vertical;">{{ old('description', $product->description) }}</textarea>
+                </div>
+
+                <!-- Current Image -->
                 <div style="grid-column: span 2;">
                     <label style="display: block; font-weight: 600; margin-bottom: 6px;">Current Image</label>
                     @if ($product->image)
@@ -55,12 +67,14 @@
                     <input type="file" name="image" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
                 </div>
 
+                <!-- Active Checkbox -->
                 <div style="grid-column: span 2; display: flex; align-items: center; margin-top: 10px;">
                     <input type="checkbox" name="is_active" value="1" {{ $product->is_active ? 'checked' : '' }} style="margin-right: 8px;">
                     <label>Active</label>
                 </div>
             </div>
 
+            <!-- Submit -->
             <div style="text-align: right; margin-top: 30px;">
                 <button type="submit" 
                         style="background-color: #a5682a; color: #fff; border: none; padding: 10px 28px; border-radius: 8px; cursor: pointer; font-weight: 500;">

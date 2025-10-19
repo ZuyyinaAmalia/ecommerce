@@ -28,9 +28,7 @@ class ProductsPage extends Component
     #[Url]
     public $sort = 'latest';
 
-    /**
-     * 🔁 Reset pagination setiap kali filter berubah
-     */
+   
     public function updated($propertyName)
     {
         if (in_array($propertyName, ['search', 'sort', 'selected_categories'])) {
@@ -38,9 +36,7 @@ class ProductsPage extends Component
         }
     }
 
-    /**
-     * 🛒 Tambahkan produk ke keranjang
-     */
+    
     public function addToCart($product_id)
     {
         $total_count = CartManagement::addItemToCart($product_id);
@@ -56,24 +52,19 @@ class ProductsPage extends Component
         ]);
     }
 
-    /**
-     * 🎯 Query produk dengan filter + sort
-     */
+    
     public function render()
     {
         $productQuery = Product::query()->where('is_active', 1);
 
-        // 🔍 Search by name
         if ($this->search !== '') {
             $productQuery->where('name', 'like', '%' . $this->search . '%');
         }
 
-        // 🧩 Filter by category
         if (!empty($this->selected_categories)) {
             $productQuery->whereIn('category_id', $this->selected_categories);
         }
 
-        // 📊 Sorting logic
         match ($this->sort) {
             'price_asc' => $productQuery->orderBy('price', 'asc'),
             'price_desc' => $productQuery->orderBy('price', 'desc'),
@@ -85,6 +76,7 @@ class ProductsPage extends Component
             'categories' => Category::all(),
         ]);
     }
+    
 }
 
 

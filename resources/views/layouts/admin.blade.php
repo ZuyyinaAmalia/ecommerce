@@ -300,7 +300,7 @@
                     🪶
                 </div>
                 <div class="brand-text">
-                    <h1>E-COMMERCE</h1>
+                    <h1>Batik Mania</h1>
                     <p>Admin Panel</p>
                 </div>
             </div>
@@ -329,7 +329,7 @@
             </nav>
 
             <div class="sidebar-footer">
-                © {{ date('Y') }} Batik E-Commerce
+                © {{ date('Y') }} Batik Mania
             </div>
         </aside>
 

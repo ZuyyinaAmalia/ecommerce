@@ -29,16 +29,13 @@ class LoginPage extends Component
 
         $user = Auth::user();
 
-        // ✅ Ambil cart dari cookie (guest)
         $guestCart = CartManagement::getCartItemsFromCookie();
 
-        // ✅ Gabungkan cart guest ke database user
         if (!empty($guestCart)) {
             CartManagement::mergeGuestCartToUserCart($user, $guestCart);
-            Cookie::queue(Cookie::forget('cart_items')); // hapus cookie setelah merge
+            Cookie::queue(Cookie::forget('cart_items')); 
         }
 
-        // ✅ Redirect berdasarkan role
         if ($user->role === 'admin') {
             return redirect()->intended('/admin/dashboard');
         } else {

@@ -6,19 +6,13 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
 {
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array<int, string>
+     */
     protected $except = [
         'stripe/*',
-        'stripe/webhook',
-        '/stripe/webhook',
     ];
-
-    // Temporary: Always skip CSRF for webhook testing
-    public function handle($request, Closure $next)
-    {
-        if ($request->is('stripe/webhook') || $request->is('stripe/*')) {
-            return $next($request);
-        }
-
-        return parent::handle($request, $next);
-    }
 }
+

@@ -57,6 +57,16 @@
             </div>
             @endif
 
+            {{-- ✅ Tambahan: Metode Pembayaran --}}
+            @if(isset($details->payment_method))
+            <div>
+                <p style="font-size:12px;color:#5a4639;text-transform:uppercase;font-weight:700;">Metode Pembayaran</p>
+                <p style="font-weight:600;color:#2c1810;margin-left:0.25rem;">
+                    {{ ucfirst($details->payment_method) }}
+                </p>
+            </div>
+            @endif
+
             <div>
                 <p style="font-size:12px;color:#5a4639;text-transform:uppercase;font-weight:700;">Nama & Alamat Pemesan</p>
                 <div style="background:rgba(255,255,255,0.7);border:1px solid #d9b77b;
@@ -193,4 +203,5 @@
     </div>
 </div>
 @endsection
+
 

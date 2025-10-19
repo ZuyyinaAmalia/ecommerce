@@ -36,10 +36,9 @@ class MyAccountPage extends Component
                 'required','email','max:255',
                 Rule::unique('users','email')->ignore(auth()->id())
             ],
-            'newPhoto' => 'nullable|image|max:2048', // maksimal 2MB
+            'newPhoto' => 'nullable|image|max:2048', 
         ];
 
-        // Hanya tambahkan aturan password jika diisi
         if (!empty($this->password)) {
             $rules['password'] = 'required|min:8|same:password_confirmation';
             $rules['password_confirmation'] = 'required|min:8';
@@ -96,7 +95,6 @@ class MyAccountPage extends Component
 
         $user->save();
 
-        // reset field password
         $this->password = '';
         $this->password_confirmation = '';
         $this->newPhoto = null;

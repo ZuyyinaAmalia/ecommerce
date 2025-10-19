@@ -1,3 +1,7 @@
+@php
+use Illuminate\Support\Str;
+@endphp
+
 <div class="w-full max-w-[85rem] py-10 px-4 sm:px-6 lg:px-8 mx-auto">
   <section class="py-10 bg-gray-50 font-poppins dark:bg-gray-800 rounded-lg">
     <div class="px-4 py-4 mx-auto max-w-7xl lg:py-6 md:px-6">
@@ -61,15 +65,29 @@
             <div class="border border-gray-300 dark:border-gray-700 rounded-lg 
                         overflow-hidden bg-white dark:bg-gray-900 shadow-sm 
                         hover:shadow-md transition">
+              
+              {{-- 🖼️ Gambar Produk --}}
               <div class="relative bg-gray-200 dark:bg-gray-800">
                 <a href="{{ url('/products/' . $product->id) }}">
-                  <img 
-                    src="{{ url('storage', $product->image[0]) }}" 
-                    alt="{{ $product->name }}" 
-                    class="object-cover w-full h-56"
-                  >
+                  @if(Str::startsWith($product->image, 'http'))
+                    {{-- Gambar dari URL eksternal --}}
+                    <img 
+                      src="{{ $product->image }}" 
+                      alt="{{ $product->name }}" 
+                      class="object-cover w-full h-56"
+                    >
+                  @else
+                    {{-- Gambar dari storage lokal --}}
+                    <img 
+                      src="{{ asset('storage/' . $product->image) }}" 
+                      alt="{{ $product->name }}" 
+                      class="object-cover w-full h-56"
+                    >
+                  @endif
                 </a>
               </div>
+
+              {{-- 📝 Info Produk --}}
               <div class="p-4">
                 <h3 class="text-lg font-semibold mb-2 dark:text-gray-200 truncate">
                   {{ $product->name }}
@@ -78,6 +96,8 @@
                   {{ Number::currency($product->price, 'IDR') }}
                 </p>
               </div>
+
+              {{-- 🛒 Tombol Add to Cart --}}
               <div class="flex justify-center p-4 border-t border-gray-200 dark:border-gray-700">
                 <button
                   type="button"
@@ -112,4 +132,6 @@
     </div>
   </section>
 </div>
+
+
 

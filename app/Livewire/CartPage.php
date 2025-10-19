@@ -15,7 +15,6 @@ class CartPage extends Component
 
     public function mount()
     {
-        // ✅ Ambil cart baik dari DB (kalau login) atau cookie (kalau guest)
         $this->cart_items = CartManagement::getCartItems();
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
     }
@@ -25,7 +24,6 @@ class CartPage extends Component
         $this->cart_items = CartManagement::removeItemFromCart($product_id);
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
 
-        // Update jumlah di navbar
         $this->dispatch('update-cart-count', total_count: count($this->cart_items))
             ->to(Navbar::class);
     }
@@ -44,7 +42,6 @@ class CartPage extends Component
 
     public function placeOrder()
     {
-        // ✅ Pindah ke halaman checkout
         return redirect()->to('/checkout');
     }
 

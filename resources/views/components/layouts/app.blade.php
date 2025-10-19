@@ -24,9 +24,6 @@
       {{ $slot }}
     </main>
 
-    {{-- 🔻 Footer --}}
-    @livewire('partials.footer')
-
     {{-- ⚙️ Scripts Section --}}
     @livewireScripts
 

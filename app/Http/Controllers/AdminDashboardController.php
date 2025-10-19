@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
@@ -13,7 +14,10 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $totalRevenue = Order::where('status', 'completed')->sum('total');
+        $totalRevenue = Order::where('status', 'completed')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->sum('total');
         $totalOrder     = Order::count();
         $totalCustomer  = User::count();
         $pending        = Order::where('status', 'pending')->count();
@@ -132,8 +136,6 @@ class AdminDashboardController extends Controller
     private function getRecentActivities($limit = 10)
     {
         $activities = collect();
-        
-        // 1. Recent Orders (Pesanan Baru)
         $recentOrders = Order::with('user')
             ->latest()
             ->limit(5)
@@ -157,7 +159,6 @@ class AdminDashboardController extends Controller
                 ];
             });
         
-        // 2. Recently Added/Updated Products
         $recentProducts = Product::latest()
             ->limit(5)
             ->get()
@@ -172,7 +173,6 @@ class AdminDashboardController extends Controller
                 ];
             });
         
-        // 3. New Customers (Pelanggan Baru Terdaftar)
         $recentCustomers = User::latest()
             ->limit(5)
             ->get()
@@ -187,7 +187,6 @@ class AdminDashboardController extends Controller
                 ];
             });
         
-        // Gabungkan semua aktivitas dan urutkan berdasarkan waktu
         $activities = $activities
             ->merge($recentOrders)
             ->merge($recentProducts)

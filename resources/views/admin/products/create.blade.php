@@ -69,6 +69,13 @@
                 </select>
             </div>
 
+            <!-- Description -->
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-weight:600; margin-bottom:4px;">Description</label>
+                <textarea name="description" rows="4"
+                    style="width:100%; border:1px solid #c7a46c; border-radius:6px; padding:8px; background-color:#fffdf8;">{{ old('description') }}</textarea>
+            </div>
+
             <!-- Image -->
             <div style="margin-bottom: 16px;">
                 <label style="display:block; font-weight:600; margin-bottom:4px;">Image</label>
@@ -98,4 +105,5 @@
     </div>
 </div>
 @endsection
+
 

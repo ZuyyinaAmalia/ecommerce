@@ -36,16 +36,15 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'description' => 'nullable|string|max:1000',
             'category_id' => 'nullable|exists:categories,id',
             'is_active' => 'nullable|boolean',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         try {
-            // Handle checkbox is_active (jika tidak dicentang, tidak akan ada di request)
             $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
-            // Upload gambar jika ada
             if ($request->hasFile('image')) {
                 $validated['image'] = $request->file('image')->store('products', 'public');
             }
@@ -56,7 +55,6 @@ class ProductController extends Controller
                 ->with('success', 'Produk berhasil ditambahkan!');
                 
         } catch (\Exception $e) {
-            // Hapus gambar jika upload berhasil tapi create gagal
             if (isset($validated['image']) && Storage::disk('public')->exists($validated['image'])) {
                 Storage::disk('public')->delete($validated['image']);
             }
@@ -67,54 +65,45 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Form edit produk
-     */
     public function edit(Product $product)
     {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    /**
-     * Update produk
-     */
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'deskripsi' => 'required|string|max:1000',
+            'description' => 'nullable|string|max:1000',
             'category_id' => 'nullable|exists:categories,id',
             'is_active' => 'nullable|boolean',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         try {
-            // Handle checkbox is_active
             $validated['is_active'] = $request->has('is_active') ? 1 : 0;
 
-            // Simpan path gambar lama untuk rollback jika error
             $oldImage = $product->image;
 
-            // Upload gambar baru jika ada
             if ($request->hasFile('image')) {
-                // Hapus gambar lama
+                $validated['image'] = $request->file('image')->store('products', 'public');
+
                 if ($oldImage && Storage::disk('public')->exists($oldImage)) {
                     Storage::disk('public')->delete($oldImage);
                 }
-
-                $validated['image'] = $request->file('image')->store('products', 'public');
+            } else {
+                $validated['image'] = $oldImage;
             }
 
             $product->update($validated);
 
             return redirect()->route('products.index')
                 ->with('success', 'Produk berhasil diupdate!');
-                
         } catch (\Exception $e) {
-            // Rollback: hapus gambar baru jika upload berhasil tapi update gagal
-            if (isset($validated['image']) && Storage::disk('public')->exists($validated['image'])) {
+            if (isset($validated['image']) && $validated['image'] !== $product->image && Storage::disk('public')->exists($validated['image'])) {
                 Storage::disk('public')->delete($validated['image']);
             }
 
@@ -124,13 +113,9 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Hapus produk
-     */
     public function destroy(Product $product)
     {
         try {
-            // Cek apakah produk ada di order yang belum selesai
             $hasActiveOrders = $product->orderItems()
                 ->whereHas('order', function($query) {
                     $query->whereIn('status', ['pending', 'processing']);
@@ -142,12 +127,10 @@ class ProductController extends Controller
                     ->with('error', 'Produk tidak bisa dihapus karena masih ada pesanan aktif!');
             }
 
-            // Hapus gambar jika ada
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
 
-            // Hapus produk
             $product->delete();
 
             return redirect()->route('products.index')
@@ -159,9 +142,6 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Toggle status produk (opsional - fitur quick toggle)
-     */
     public function toggleStatus(Product $product)
     {
         try {
@@ -184,7 +164,6 @@ class ProductController extends Controller
     {
         $keyword = $request->input('q');
 
-        // Ambil produk yang namanya mengandung keyword
         $products = Product::where('name', 'like', "%{$keyword}%")->get();
 
         return view('products.index', compact('products'));

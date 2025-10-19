@@ -23,7 +23,6 @@ class CheckoutPage extends Component
 
     public function mount()
     {
-        // Ambil cart dari database kalau login, atau cookie kalau guest
         if (Auth::check()) {
             $this->cart_items = CartItem::with('product')
                 ->whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))
@@ -47,7 +46,6 @@ class CheckoutPage extends Component
             return redirect('/products');
         }
 
-        // Autofill data user kalau login
         $user = auth()->user();
         if ($user) {
             $this->first_name = $user->name;
@@ -71,14 +69,12 @@ class CheckoutPage extends Component
         $order_items = [];
         $cart_for_total = [];
 
-        // 🔹 Ambil cart dan siapkan data
         if (Auth::check()) {
             $cartItems = CartItem::with('product')
                 ->whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))
                 ->get();
         
             foreach ($cartItems as $item) {
-                // Untuk Stripe
                 $line_items[] = [
                     'price_data' => [
                         'currency' => 'idr',
@@ -90,15 +86,13 @@ class CheckoutPage extends Component
                     'quantity' => $item->qty,
                 ];
             
-                // Untuk database order_items - PENTING: gunakan nama field yang PERSIS
                 $order_items[] = [
                     'product_id' => $item->product->id,
-                    'qty' => (int) $item->qty,  // ✅ Cast ke integer
-                    'price' => (float) $item->product->price,  // ✅ Cast ke float
+                    'qty' => (int) $item->qty,  
+                    'price' => (float) $item->product->price,  
                     'subtotal' => (float) ($item->product->price * $item->qty),
                 ];
             
-                // Untuk calculate total
                 $cart_for_total[] = [
                     'quantity' => $item->qty,
                     'unit_amount' => $item->product->price,
@@ -107,11 +101,9 @@ class CheckoutPage extends Component
             }
         
         } else {
-            // Guest user - dari cookie
             $cart_items = CartManagement::getCartItemsFromCookie();
         
             foreach ($cart_items as $item) {
-                // Untuk Stripe
                 $line_items[] = [
                     'price_data' => [
                         'currency' => 'idr',
@@ -123,11 +115,10 @@ class CheckoutPage extends Component
                     'quantity' => $item['quantity'],
                 ];
             
-                // Untuk database order_items
                 $order_items[] = [
                     'product_id' => (int) $item['id'],
-                    'qty' => (int) $item['quantity'],  // ✅ Cast ke integer
-                    'price' => (float) $item['unit_amount'],  // ✅ Cast ke float
+                    'qty' => (int) $item['quantity'],  
+                    'price' => (float) $item['unit_amount'],  
                     'subtotal' => (float) $item['total_amount'],
                 ];
             }
@@ -135,7 +126,6 @@ class CheckoutPage extends Component
             $cart_for_total = $cart_items;
         }
 
-        // 🔹 Simpan order baru
         $order = new Order();
         $order->user_id = Auth::id();
         $order->total = CartManagement::calculateGrandTotal($cart_for_total);
@@ -146,7 +136,6 @@ class CheckoutPage extends Component
 
         $redirect_url = '';
 
-        // 🔹 Integrasi Stripe
         if ($this->payment_method == 'stripe') {
             Stripe::setApiKey(env('STRIPE_SECRET'));
             $sessionCheckout = Session::create([
@@ -160,32 +149,25 @@ class CheckoutPage extends Component
 
             $redirect_url = $sessionCheckout->url;
         } else {
-            // COD
             $redirect_url = route('success');
         }
 
-        // 🔹 Simpan order dan itemnya
         $order->save();
-    
-        // Debug - hapus setelah berhasil
-        //dd($order_items);
+
     
         $order->items()->createMany($order_items);
 
-        // 🔹 Bersihkan cart
         if (Auth::check()) {
             CartItem::whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))->delete();
         } else {
             CartManagement::clearCartItems();
         }
 
-        // 🔹 Redirect
         return redirect($redirect_url);
     }
 
     public function render()
     {
-        // Pastikan data cart selalu up-to-date
         if (Auth::check()) {
             $this->cart_items = CartItem::with('product')
                 ->whereHas('cart', fn($q) => $q->where('user_id', Auth::id()))
@@ -205,7 +187,6 @@ class CheckoutPage extends Component
             $this->cart_items = CartManagement::getCartItemsFromCookie();
         }
 
-        // Gunakan helper resmi
         $grand_total = CartManagement::calculateGrandTotal($this->cart_items);
 
         return view('livewire.checkout-page', [

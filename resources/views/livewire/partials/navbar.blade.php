@@ -4,7 +4,7 @@
       <!-- Brand -->
       <div class="flex items-center justify-between">
         <a class="flex-none text-xl font-semibold dark:text-white" href="/" aria-label="Brand">
-          Kelompok 5
+          Batik Mania
         </a>
 
         <!-- Mobile Toggle -->
@@ -37,11 +37,6 @@
           <a wire:navigate href="/"
             class="font-medium {{ request()->is('/') ? 'text-blue-600' : 'text-gray-500' }} py-3 md:py-6">Home</a>
 
-          <a wire:navigate href="/categories"
-            class="font-medium {{ request()->is('categories') ? 'text-blue-600' : 'text-gray-500' }} hover:text-gray-400 py-3 md:py-6">
-            Categories
-          </a>
-
           <a wire:navigate href="/products"
             class="font-medium {{ request()->is('products') ? 'text-blue-600' : 'text-gray-500' }} hover:text-gray-400 py-3 md:py-6">
             Products
@@ -58,8 +53,6 @@
                 c.576 0 1.059.435 1.119 1.007Z" />
             </svg>
             <span class="mr-1">Cart</span>
-            <span
-              class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">4</span>
           </a>
 
           <!-- Login -->

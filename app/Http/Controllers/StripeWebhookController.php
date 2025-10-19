@@ -3,48 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Order;
 use Illuminate\Support\Facades\Log;
-use Stripe\Webhook;
-use Stripe\Exception\SignatureVerificationException;
 
 class StripeWebhookController extends Controller
 {
     public function handleWebhook(Request $request)
     {
         $payload = $request->getContent();
-        $sigHeader = $request->header('Stripe-Signature');
-        $endpointSecret = env('STRIPE_WEBHOOK_SECRET'); // ambil dari dashboard Stripe
+        $event = json_decode($payload, true);
 
-        try {
-            // Verifikasi signature dari Stripe
-            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-        } catch (SignatureVerificationException $e) {
-            Log::error('Stripe signature verification failed: ' . $e->getMessage());
-            return response('Invalid signature', 400);
-        }
+        Log::info('Stripe Webhook Received', $event);
 
-        // Hanya tangani event pembayaran sukses
-        if ($event->type === 'checkout.session.completed') {
-            $session = $event->data->object;
+        if (isset($event['type'])) {
+            switch ($event['type']) {
+                case 'checkout.session.completed':
+                    Log::info('✅ Checkout session completed', $event['data']['object']);
+                    break;
 
-            // Ambil order berdasarkan ID (pastikan kamu simpan order_id di metadata)
-            $orderId = $session->metadata->order_id ?? null;
+                case 'payment_intent.succeeded':
+                    Log::info('💰 Payment succeeded', $event['data']['object']);
+                    break;
 
-            if ($orderId) {
-                $order = Order::find($orderId);
-
-                if ($order) {
-                    $order->status = 'completed';
-                    $order->save();
-
-                    Log::info("✅ Order #{$order->id} marked as completed.");
-                }
+                default:
+                    Log::info('ℹ️ Unhandled event type: ' . $event['type']);
             }
         }
 
-        return response('Webhook handled', 200);
+        return response('Webhook received', 200);
     }
 }
+
 
 

@@ -9,33 +9,27 @@ use Illuminate\Support\Facades\Cookie;
 
 class CartManagement
 {
-    // =============================
-    // 🔹 Get all cart items
-    // =============================
+    
     public static function getCartItems()
     {
         if (auth()->check()) {
             $cart = Cart::firstOrCreate(['user_id' => auth()->id()]);
             return $cart->items()->with('product')->get()->map(function ($item) {
                 return [
-                    'product_id' => $item->product->id,
-                    'name' => $item->product->name,
-                    'image' => $item->product->image[0] ?? null,
-                    'quantity' => $item->qty,
-                    'unit_amount' => $item->product->price,
+                    'product_id'   => $item->product->id,
+                    'name'         => $item->product->name,
+                    'image'        => self::extractImagePath($item->product->image),
+                    'quantity'     => $item->qty,
+                    'unit_amount'  => $item->product->price,
                     'total_amount' => $item->product->price * $item->qty,
                 ];
             })->toArray();
         }
 
-        // Guest
         $cart = json_decode(Cookie::get('cart_items'), true);
         return is_array($cart) ? $cart : [];
     }
 
-    // =============================
-    // 🔹 Add item to cart
-    // =============================
     public static function addItemToCart($product_id)
     {
         if (auth()->check()) {
@@ -48,16 +42,15 @@ class CartManagement
                 $item->increment('qty');
             } else {
                 CartItem::create([
-                    'cart_id' => $cart->id,
+                    'cart_id'    => $cart->id,
                     'product_id' => $product_id,
-                    'qty' => 1,
+                    'qty'        => 1,
                 ]);
             }
 
             return self::getCartItems();
         }
 
-        // Guest
         $cart_items = self::getCartItemsFromCookie();
         $found = false;
 
@@ -74,11 +67,11 @@ class CartManagement
             $product = Product::find($product_id, ['id', 'name', 'price', 'image']);
             if ($product) {
                 $cart_items[] = [
-                    'product_id' => $product->id,
-                    'name' => $product->name,
-                    'image' => $product->image[0] ?? null,
-                    'quantity' => 1,
-                    'unit_amount' => $product->price,
+                    'product_id'   => $product->id,
+                    'name'         => $product->name,
+                    'image'        => self::extractImagePath($product->image),
+                    'quantity'     => 1,
+                    'unit_amount'  => $product->price,
                     'total_amount' => $product->price,
                 ];
             }
@@ -88,9 +81,6 @@ class CartManagement
         return $cart_items;
     }
 
-    // =============================
-    // 🔹 Remove item from cart
-    // =============================
     public static function removeItemFromCart($product_id)
     {
         if (auth()->check()) {
@@ -103,15 +93,11 @@ class CartManagement
             return self::getCartItems();
         }
 
-        // Guest
         $cart_items = array_filter(self::getCartItemsFromCookie(), fn($item) => $item['product_id'] != $product_id);
         self::saveCartItemsToCookie(array_values($cart_items));
         return $cart_items;
     }
 
-    // =============================
-    // 🔹 Increment quantity
-    // =============================
     public static function incrementQuantity($product_id)
     {
         if (auth()->check()) {
@@ -134,9 +120,7 @@ class CartManagement
         return $cart_items;
     }
 
-    // =============================
-    // 🔹 Decrement quantity
-    // =============================
+
     public static function decrementQuantity($product_id)
     {
         if (auth()->check()) {
@@ -159,18 +143,14 @@ class CartManagement
         return $cart_items;
     }
 
-    // =============================
-    // 🔹 Calculate grand total
-    // =============================
+
     public static function calculateGrandTotal($items)
     {
         if (!is_array($items)) return 0;
         return array_sum(array_column($items, 'total_amount'));
     }
 
-    // =============================
-    // 🔹 Cookie helpers
-    // =============================
+
     public static function getCartItemsFromCookie()
     {
         $cart = json_decode(Cookie::get('cart_items', '[]'), true);
@@ -206,15 +186,33 @@ class CartManagement
                 $existingItem->save();
             } else {
                 CartItem::create([
-                    'cart_id' => $cart->id,
+                    'cart_id'    => $cart->id,
                     'product_id' => $item['product_id'],
-                    'qty' => $item['quantity'],
+                    'qty'        => $item['quantity'],
                 ]);
             }
         }
 
-        // 🧹 Hapus cookie setelah data dimigrasi
         Cookie::queue(Cookie::forget('cart_items'));
     }
 
+
+    private static function extractImagePath($image)
+    {
+        if (is_array($image)) {
+            $img = $image[0] ?? null;
+        } elseif (is_string($image)) {
+            $decoded = json_decode($image, true);
+            $img = is_array($decoded) ? ($decoded[0] ?? null) : $image;
+        } else {
+            $img = null;
+        }
+
+        if ($img && !str_starts_with($img, ['http', 'https', 'produk/'])) {
+            $img = 'produk/' . ltrim($img, '/');
+        }
+
+        return $img;
+    }
 }
+
