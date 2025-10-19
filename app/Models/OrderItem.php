@@ -18,6 +18,20 @@ class OrderItem extends Model
         'subtotal',
     ];
 
+        protected static function boot()
+    {
+        parent::boot();
+
+        // otomatis hitung subtotal sebelum disimpan
+        static::creating(function ($item) {
+            $item->subtotal = $item->qty * $item->price;
+        });
+
+        static::updating(function ($item) {
+            $item->subtotal = $item->qty * $item->price;
+        });
+    }
+
     public function order(){
         return $this->belongsTo(Order::class);
     }

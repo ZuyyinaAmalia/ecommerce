@@ -51,19 +51,25 @@
             {{ $product->description }}
           </p>
 
-          <!-- Quantity -->
-          <div>
-            <label class="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Quantity</label>
-            <div class="flex items-center w-32 bg-gray-200 rounded-lg overflow-hidden">
-              <button class="w-10 h-10 text-gray-700 font-bold text-lg hover:bg-gray-300">-</button>
-              <input type="number" readonly value="1" class="w-12 text-center bg-gray-200 text-gray-700 font-semibold">
-              <button class="w-10 h-10 text-gray-700 font-bold text-lg hover:bg-gray-300">+</button>
+          <div class="w-32 mb-8 ">
+            <label for="" class="w-full pb-1 text-xl font-semibold text-gray-700 border-b border-blue-300 dark:border-gray-600 dark:text-gray-400">Quantity</label>
+            <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
+              <button wire:click='decreaseQty' class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400">
+                <span class="m-auto text-2xl font-thin">-</span>
+              </button>
+              <div class="w-20 h-10 flex items-center justify-center bg-gray-300 text-gray-600 font-semibold dark:bg-gray-900 dark:text-gray-400">
+                {{ $quantity }}
+              </div>
+              <button wire:click='increaseQty' class="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400">
+                <span class="m-auto text-2xl font-thin">+</span>
+              </button>
             </div>
           </div>
 
           <!-- Tombol Add to Cart -->
-          <button class="w-full lg:w-2/5 py-3 mt-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors">
-            Add to cart
+          <button wire:click="addToCart({{ $product->id }})" class="w-full lg:w-2/5 py-3 mt-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors">
+              <span wire:loading.remove wire:target="addToCart({{ $product->id }})">Add to cart ({{ $quantity }})</span>
+              <span wire:loading wire:target="addToCart({{ $product->id }})">Adding...</span>
           </button>
 
           <!-- Info tambahan -->

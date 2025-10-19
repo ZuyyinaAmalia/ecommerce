@@ -15,9 +15,7 @@ class OrderStats extends StatsOverviewWidget
             Stat::make('New Orders', Order::where('status', 'new')->count()),
             Stat::make('Order Processing', Order::where('status', 'processing')->count()),
             Stat::make('Order Shipped', Order::where('status', 'shipped')->count()),
-            Stat::make('Average Price', 'IDR ' . number_format(Order::query()->avg('total') ?? 0, 0, ',', '.')),
-
-
+            Stat::make('Average Price', '' . number_format(Order::query()->avg('total') ?? 0, 0, ',', '.')),
         ];
     }
 }

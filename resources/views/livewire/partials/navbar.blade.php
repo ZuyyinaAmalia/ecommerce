@@ -24,46 +24,126 @@
 
             <a wire:navigate class="font-medium {{ request()->is('/') ? 'text-blue-600' : 'text-gray-500' }} hover:text-gray-400 py-3 md:py-6 dark:text-blue-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/" aria-current="page">Home</a>
 
-            <a wire:navigate class="font-medium {{ request()->is('categories') ? 'text-blue-600' : 'text-gray-500' }} hover:text-gray-400 py-3 md:py-6 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/categories">
-              Categories
-            </a>
-
             <a wire:navigate class="font-medium {{ request()->is('products') ? 'text-blue-600' : 'text-gray-500' }} hover:text-gray-400 py-3 md:py-6 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/products">
               Products
             </a>
-
-            <div class="relative flex items-center">
-                <button @click="showSearch = !showSearch" class="focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600 hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-4.35-4.35M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" />
-                    </svg>
-                </button>
-
-                {{-- Search input muncul ke samping --}}
-                <input
-                    x-show="showSearch"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 transform scale-x-0"
-                    x-transition:enter-end="opacity-100 transform scale-x-100"
-                    x-transition:leave="transition ease-in duration-200"
-                    x-transition:leave-start="opacity-100 transform scale-x-100"
-                    x-transition:leave-end="opacity-0 transform scale-x-0"
-                    type="text"
-                    placeholder="Search..."
-                    class="ml-2 px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200 w-48"
-                />
-            </div>
-
 
             <a wire:navigate class="font-medium flex items-center {{ request()->is('cart') ? 'text-blue-600' : 'text-gray-500' }} hover:text-gray-400 py-3 md:py-6 dark:text-gray-400 dark:hover:text-gray-500 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/cart">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="flex-shrink-0 w-5 h-5 mr-1">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
-              <span class="mr-1">Cart</span> <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600">4</span>
+              <span class="mr-1">Cart</span> <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-blue-50 border border-blue-200 text-blue-600"> {{ $total_count }}</span>
             </a>
 
-            <div class="pt-3 md:pt-0">
+            <!-- Login -->
+            @guest
+              <div class="pt-3 md:pt-0">
+                <a wire:navigate href="/login"
+                  class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700">
+                  <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  Log in
+                </a>
+              </div>
+            @endguest
+
+            <!-- Dropdown User -->
+            @auth
+              <div class="relative group md:py-4">
+                <button id="dropdown-user" type="button"
+                  class="flex items-center text-gray-600 hover:text-gray-800 font-medium dark:text-gray-300 dark:hover:text-gray-100">
+                  @if (auth()->user()->profile_photo)
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}" alt="Profile Photo"
+                      class="w-6 h-6 rounded-full mr-2 object-cover">
+                  @else
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                      stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2 text-gray-400">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15.75 7.5a3.75 3.75 0 1 1-7.5 0 
+                        3.75 3.75 0 0 1 7.5 0ZM4.5 19.5a8.25 
+                        8.25 0 0 1 15 0v.75H4.5v-.75Z" />
+                    </svg>
+                  @endif
+
+                  {{ auth()->user()->name }}
+                  <svg class="ml-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+
+                <!-- Dropdown Menu (fixed position, tidak tertutup apapun) -->
+                <div id="dropdown-menu-user"
+                  class="fixed bg-white dark:bg-gray-800 shadow-xl rounded-lg opacity-0 invisible transition-all duration-200 ease-out z-[999999]"
+                  style="min-width: 12rem;">
+                  <a wire:navigate href="/my-orders"
+                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                    My Orders
+                  </a>
+                  <a wire:navigate href="/account"
+                    class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700">
+                    My Account
+                  </a>
+                  <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit"
+                      class="block w-full text-left py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 
+                            dark:text-gray-200 dark:hover:bg-gray-700">
+                        Logout
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <script>
+                const btn = document.getElementById('dropdown-user');
+                const menu = document.getElementById('dropdown-menu-user');
+
+                // Tampilkan dropdown saat hover
+                btn.addEventListener('mouseenter', () => showMenu());
+                btn.addEventListener('mouseleave', () => hideMenuDelayed());
+                menu.addEventListener('mouseenter', () => showMenu());
+                menu.addEventListener('mouseleave', () => hideMenu());
+
+                // Toggle saat diklik
+                btn.addEventListener('click', (e) => {
+                  e.stopPropagation();
+                  toggleMenu();
+                });
+
+                // Tutup saat klik di luar
+                document.addEventListener('click', hideMenu);
+
+                function toggleMenu() {
+                  if (menu.classList.contains('opacity-100')) hideMenu();
+                  else showMenu();
+                }
+
+                function showMenu() {
+                  const rect = btn.getBoundingClientRect();
+                  menu.style.top = rect.bottom + 5 + 'px';
+                  menu.style.left = rect.right - menu.offsetWidth + 'px';
+                  menu.classList.remove('invisible', 'opacity-0');
+                  menu.classList.add('opacity-100', 'visible');
+                }
+
+                function hideMenu() {
+                  menu.classList.remove('opacity-100', 'visible');
+                  menu.classList.add('opacity-0', 'invisible');
+                }
+
+                function hideMenuDelayed() {
+                  setTimeout(() => {
+                    if (!menu.matches(':hover')) hideMenu();
+                  }, 150);
+                }
+              </script>
+            @endauth
+
+            <!-- <div class="pt-3 md:pt-0">
               <a wire:navigate class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" href="/login">
                 <svg class="flex-shrink-0 w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
@@ -93,7 +173,7 @@
                 Logout
               </a>
             </div>
-          </div> --}}
+          </div> --}} -->
 
           </div>
         </div>
